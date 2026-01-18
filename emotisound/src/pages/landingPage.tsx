@@ -70,8 +70,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ user, onLogout }) => {
               lineHeight: 1.6,
             }}
           >
-            Experience video calls like never before. EmotiSound detects emotions in real-time
-            and brings your conversations to life with personalized audio feedback.
+            Hear emotions, not just words. <br></br>
+            EmotiSound is an accessibility-first video tool that translates facial expressions into audio cues, helping blind and neurodivergent users better sense emotional context in real time.
           </p>
 
           <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem", alignItems: "center" }}>
