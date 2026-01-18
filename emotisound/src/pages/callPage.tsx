@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useEmotionDetection } from '../hooks/useEmotionDetection';
-import { EMOTION_FREQUENCIES } from '../utils/emotionMapper';
 import type { Emotion } from '../types';
 
 const CallPage: React.FC = () => {
+    const navigate = useNavigate();
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const remoteVideoRef = useRef<HTMLVideoElement>(null);
     const [isActive, setIsActive] = useState(false);
+    const [callEnded, setCallEnded] = useState(false);
+    const [endMessage, setEndMessage] = useState<string>("");
 
     const pcRef = useRef<RTCPeerConnection | null>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
@@ -18,6 +21,23 @@ const CallPage: React.FC = () => {
         const audio = new Audio(`/sounds/${emotion}.mp3`);
         audio.volume = 0.5;
         audio.play().catch(err => console.log("Could not play sound:", err));
+    };
+
+    // End call and return to landing page
+    const endCall = () => {
+        // Notify the other user that this user is ending the call
+        if (socketRef.current?.readyState === WebSocket.OPEN) {
+            socketRef.current.send(JSON.stringify({ type: "end-call" }));
+        }
+        localStreamRef.current?.getTracks().forEach(track => track.stop());
+        pcRef.current?.close();
+        if (socketRef.current?.readyState === WebSocket.OPEN || socketRef.current?.readyState === WebSocket.CONNECTING) {
+            socketRef.current?.close();
+        }
+        socketRef.current = null;
+        setEndMessage("You ended the call");
+        setCallEnded(true);
+        setTimeout(() => navigate('/'), 2000);
     };
 
     const config = {
@@ -63,6 +83,16 @@ const CallPage: React.FC = () => {
         init();
 
         const socket = socketRef.current!;
+        socket.onclose = () => {
+            console.log("Remote user closed connection");
+            endCall();
+        };
+
+        socket.onerror = () => {
+            console.log("Socket connection error");
+            endCall();
+        };
+
         socket.onmessage = async (event) => {
             const data = JSON.parse(event.data);
             if (data.type === "offer") {
@@ -75,6 +105,15 @@ const CallPage: React.FC = () => {
             }
             if (data.type === "answer") await pcRef.current!.setRemoteDescription(data.answer);
             if (data.type === "ice") await pcRef.current!.addIceCandidate(data.candidate);
+            if (data.type === "end-call") {
+                console.log("Other user ended the call");
+                localStreamRef.current?.getTracks().forEach(track => track.stop());
+                pcRef.current?.close();
+                socketRef.current = null;
+                setEndMessage("The other user ended the call");
+                setCallEnded(true);
+                setTimeout(() => navigate('/'), 2000);
+            }
         };
 
 
@@ -87,10 +126,20 @@ const CallPage: React.FC = () => {
         socketRef.current.send(JSON.stringify({ type: "offer", offer }));
     };
 
-    const { currentEmotion, confidence, error: detectionError } = useEmotionDetection(
+    const { currentEmotion, confidence } = useEmotionDetection(
         remoteVideoRef,
         isActive
     );
+
+    const [hasRemoteStream, setHasRemoteStream] = useState(false);
+
+    useEffect(() => {
+        const checkRemoteStream = () => {
+            setHasRemoteStream(!!remoteVideoRef.current?.srcObject);
+        };
+        const interval = setInterval(checkRemoteStream, 500);
+        return () => clearInterval(interval);
+    }, []);
 
     // Play sound when emotion changes
     useEffect(() => {
@@ -105,24 +154,64 @@ const CallPage: React.FC = () => {
             style={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "2rem",
                 minHeight: "100vh",
-                backgroundColor: "#1f1f1f", // dark grey background
+                backgroundColor: "#1f1f1f",
                 fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
                 color: "#f5f5f5",
             }}
         >
-            <h1 style={{ marginBottom: "2rem" }}>Video Call</h1>
+            {/* Call Ended Popup */}
+            {callEnded && (
+                <div style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 1000,
+                }}>
+                    <div style={{
+                        backgroundColor: "#2c2c2c",
+                        padding: "2rem",
+                        borderRadius: "16px",
+                        boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
+                        textAlign: "center",
+                    }}>
+                        <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#4fc3f7" }}>
+                            Call Ended
+                        </h2>
+                        <p style={{ fontSize: "1rem", marginBottom: "0.5rem", color: "#b0b0b0" }}>
+                            {endMessage}
+                        </p>
+                        <p style={{ fontSize: "0.85rem", color: "#808080", marginTop: "1rem" }}>
+                            Returning to home...
+                        </p>
+                    </div>
+                </div>
+            )}
 
+            {/* Header */}
+            <div style={{
+                padding: "1.5rem",
+                textAlign: "center",
+                borderBottom: "1px solid #2c2c2c"
+            }}>
+                <h1 style={{ margin: 0, fontSize: "1.5rem" }}>Video Call</h1>
+            </div>
+
+            {/* Main Video Area */}
             <div
                 style={{
+                    flex: 1,
                     display: "flex",
-                    gap: "2rem",
-                    flexWrap: "wrap",
+                    gap: hasRemoteStream ? "1rem" : "0",
+                    padding: "1rem",
                     justifyContent: "center",
-                    marginBottom: "2rem",
+                    alignItems: "center",
                 }}
             >
                 {/* Local Video */}
@@ -199,30 +288,63 @@ const CallPage: React.FC = () => {
             </div>
 
 
-            <button
-                onClick={startCall}
-                style={{
-                    padding: "0.75rem 2rem",
-                    fontSize: "1rem",
-                    fontWeight: "bold",
-                    backgroundColor: "#4b4b4b",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    transition: "background-color 0.3s, transform 0.2s",
-                }}
-                onMouseOver={(e) => {
-                    (e.target as HTMLButtonElement).style.backgroundColor = "#5c5c5c";
-                    (e.target as HTMLButtonElement).style.transform = "scale(1.05)";
-                }}
-                onMouseOut={(e) => {
-                    (e.target as HTMLButtonElement).style.backgroundColor = "#4b4b4b";
-                    (e.target as HTMLButtonElement).style.transform = "scale(1)";
-                }}
-            >
-                Start Call
-            </button>
+            {/* Bottom Controls */}
+            <div style={{
+                padding: "1.5rem",
+                display: "flex",
+                justifyContent: "center",
+                gap: "1rem",
+                borderTop: "1px solid #2c2c2c"
+            }}>
+                <button
+                    onClick={startCall}
+                    style={{
+                        padding: "0.75rem 2.5rem",
+                        fontSize: "1rem",
+                        fontWeight: "bold",
+                        backgroundColor: "#4b4b4b",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "24px",
+                        cursor: "pointer",
+                        transition: "background-color 0.3s, transform 0.2s",
+                    }}
+                    onMouseOver={(e) => {
+                        (e.target as HTMLButtonElement).style.backgroundColor = "#5c5c5c";
+                        (e.target as HTMLButtonElement).style.transform = "scale(1.05)";
+                    }}
+                    onMouseOut={(e) => {
+                        (e.target as HTMLButtonElement).style.backgroundColor = "#4b4b4b";
+                        (e.target as HTMLButtonElement).style.transform = "scale(1)";
+                    }}
+                >
+                    Start Call
+                </button>
+                <button
+                    onClick={endCall}
+                    style={{
+                        padding: "0.75rem 2.5rem",
+                        fontSize: "1rem",
+                        fontWeight: "bold",
+                        backgroundColor: "#d32f2f",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "24px",
+                        cursor: "pointer",
+                        transition: "background-color 0.3s, transform 0.2s",
+                    }}
+                    onMouseOver={(e) => {
+                        (e.target as HTMLButtonElement).style.backgroundColor = "#f44336";
+                        (e.target as HTMLButtonElement).style.transform = "scale(1.05)";
+                    }}
+                    onMouseOut={(e) => {
+                        (e.target as HTMLButtonElement).style.backgroundColor = "#d32f2f";
+                        (e.target as HTMLButtonElement).style.transform = "scale(1)";
+                    }}
+                >
+                    End Call
+                </button>
+            </div>
         </div>
     );
 };
