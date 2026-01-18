@@ -80,7 +80,7 @@ const CallPage: React.FC<CallPageProps> = ({ user }) => {
         // Prevent duplicate connections
         if (socketRef.current) return;
 
-        socketRef.current = new WebSocket("wss://testnw.onrender.com/");
+        socketRef.current = new WebSocket("wss://nwhacks-1.onrender.com/");
 
         async function init() {
             localStreamRef.current = await navigator.mediaDevices.getUserMedia({
