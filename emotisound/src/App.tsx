@@ -1,18 +1,17 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import CallPage from './pages/callPage'
-import './App.css'
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/landingPage";
+import CallPage from "./pages/callPage";
 
-
-function App() {
-
+const App: React.FC = () => {
   return (
-    <div>
-      <CallPage />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/call" element={<CallPage />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
-export default App
+export default App;

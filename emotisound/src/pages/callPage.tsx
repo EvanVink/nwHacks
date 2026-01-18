@@ -37,12 +37,7 @@ const CallPage: React.FC = () => {
 
       pc.onicecandidate = (event) => {
         if (event.candidate) {
-          socket.send(
-            JSON.stringify({
-              type: "ice",
-              candidate: event.candidate,
-            })
-          );
+          socket.send(JSON.stringify({ type: "ice", candidate: event.candidate }));
         }
       };
     }
@@ -51,52 +46,124 @@ const CallPage: React.FC = () => {
 
     socket.onmessage = async (event) => {
       const data = JSON.parse(event.data);
-
       if (data.type === "offer") {
         await pc.setRemoteDescription(data.offer);
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
-
-        socket.send(
-          JSON.stringify({
-            type: "answer",
-            answer,
-          })
-        );
+        socket.send(JSON.stringify({ type: "answer", answer }));
       }
-
-      if (data.type === "answer") {
-        await pc.setRemoteDescription(data.answer);
-      }
-
-      if (data.type === "ice") {
-        await pc.addIceCandidate(data.candidate);
-      }
+      if (data.type === "answer") await pc.setRemoteDescription(data.answer);
+      if (data.type === "ice") await pc.addIceCandidate(data.candidate);
     };
-  }, []); // runs once when component mounts
+  }, []);
 
   const startCall = async () => {
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
-
-    socket.send(
-      JSON.stringify({
-        type: "offer",
-        offer,
-      })
-    );
+    socket.send(JSON.stringify({ type: "offer", offer }));
   };
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h2>Local</h2>
-      <video ref={localVideoRef} autoPlay muted playsInline style={{ width: "300px" }}></video>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "2rem",
+        minHeight: "100vh",
+        backgroundColor: "#1f1f1f", // dark grey background
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        color: "#f5f5f5",
+      }}
+    >
+      <h1 style={{ marginBottom: "2rem" }}>Video Call</h1>
 
-      <h2>Remote</h2>
-      <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "300px" }}></video>
+      <div
+        style={{
+          display: "flex",
+          gap: "2rem",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          marginBottom: "2rem",
+        }}
+      >
+        {/* Local Video */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            backgroundColor: "#2c2c2c", // card grey
+            padding: "1rem",
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+          }}
+        >
+          <h2 style={{ marginBottom: "1rem" }}>Local</h2>
+          <video
+            ref={localVideoRef}
+            autoPlay
+            muted
+            playsInline
+            style={{
+              width: "320px",
+              height: "240px",
+              borderRadius: "8px",
+              backgroundColor: "#000",
+            }}
+          />
+        </div>
 
-      <br />
-      <button onClick={startCall} style={{ marginTop: "1rem" }}>
+        {/* Remote Video */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            backgroundColor: "#2c2c2c", // card grey
+            padding: "1rem",
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+          }}
+        >
+          <h2 style={{ marginBottom: "1rem" }}>Remote</h2>
+          <video
+            ref={remoteVideoRef}
+            autoPlay
+            playsInline
+            style={{
+              width: "320px",
+              height: "240px",
+              borderRadius: "8px",
+              backgroundColor: "#000",
+            }}
+          />
+        </div>
+      </div>
+
+      <button
+        onClick={startCall}
+        style={{
+          padding: "0.75rem 2rem",
+          fontSize: "1rem",
+          fontWeight: "bold",
+          backgroundColor: "#4b4b4b",
+          color: "#fff",
+          border: "none",
+          borderRadius: "8px",
+          cursor: "pointer",
+          transition: "background-color 0.3s, transform 0.2s",
+        }}
+        onMouseOver={(e) => {
+          (e.target as HTMLButtonElement).style.backgroundColor = "#5c5c5c";
+          (e.target as HTMLButtonElement).style.transform = "scale(1.05)";
+        }}
+        onMouseOut={(e) => {
+          (e.target as HTMLButtonElement).style.backgroundColor = "#4b4b4b";
+          (e.target as HTMLButtonElement).style.transform = "scale(1)";
+        }}
+      >
         Start Call
       </button>
     </div>
