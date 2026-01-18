@@ -1,4 +1,6 @@
-const { addUser, getUser } = require("./db/database");
+const { initSchema } = require("./db/database");
+const userRoutes = require("./routes/user");
+const sessionRoutes = require("./routes/session");
 
 const express = require("express");
 const cors = require("cors");
@@ -17,13 +19,23 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 // Routes
-// app.use('/api/auth', authRoutes);
-// app.use('/api/user', auth, userRoutes);
-// app.use('/api/analytics', auth, analyticsRoutes);
+app.use(userRoutes);
+app.use(sessionRoutes);
 
 // Health check
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
+});
+
+// Manual DB initialization endpoint (idempotent)
+app.post("/admin/init-db", async (_req, res) => {
+  try {
+    await initSchema();
+    res.status(200).json({ status: "initialized" });
+  } catch (err) {
+    console.error("init-db error", err);
+    res.status(500).json({ error: "Failed to initialize DB" });
+  }
 });
 
 // // 404 handler
@@ -36,30 +48,6 @@ app.get("/health", (req, res) => {
 //     console.error('Server error:', err);
 //     res.status(500).json({ error: 'Internal server error' });
 // });
-
-app.post("/users", async (req, res) => {
-  const { name, email } = req.body;
-  try {
-    const result = await addUser(name, email);
-    res.status(201).json({ id: result.lastID, name, email });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to add user" });
-  }
-});
-
-app.get("/users/:id", async (req, res) => {
-  const userId = req.params.id;
-  try {
-    const user = await getUser(userId);
-    if (user) {
-      res.status(200).json(user);
-    } else {
-      res.status(404).json({ error: "User not found" });
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Failed to retrieve user" });
-  }
-});
 
 app.listen(PORT, () => {
   console.log(`API server running on http://localhost:${PORT}`);
