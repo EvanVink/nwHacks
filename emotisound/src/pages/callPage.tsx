@@ -1,15 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEmotionDetection } from '../hooks/useEmotionDetection';
-import type { Emotion } from '../types';
+import { startSession, endSession } from '../services/api';
+import type { Emotion, User } from '../types';
 
-const CallPage: React.FC = () => {
+interface CallPageProps {
+    user: User;
+}
+
+const CallPage: React.FC<CallPageProps> = ({ user }) => {
     const navigate = useNavigate();
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const remoteVideoRef = useRef<HTMLVideoElement>(null);
     const [isActive, setIsActive] = useState(false);
     const [callEnded, setCallEnded] = useState(false);
     const [endMessage, setEndMessage] = useState<string>("");
+    const [sessionId, setSessionId] = useState<string | null>(null);
+    const sessionClosedRef = useRef(false);
+    const callStartedRef = useRef(false);
+    const hasRemoteRef = useRef(false);
+    const isActiveRef = useRef(false);
+    const sessionRef = useRef<string | null>(null);
 
     const pcRef = useRef<RTCPeerConnection | null>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
@@ -23,8 +34,23 @@ const CallPage: React.FC = () => {
         audio.play().catch(err => console.log("Could not play sound:", err));
     };
 
+    const closeSession = async () => {
+        if (sessionClosedRef.current) return;
+        const activeSession = sessionRef.current;
+        if (!activeSession) return;
+        try {
+            await endSession(activeSession);
+        } catch (err) {
+            console.error('Failed to close session', err);
+        } finally {
+            sessionClosedRef.current = true;
+            sessionRef.current = null;
+            setSessionId(null);
+        }
+    };
+
     // End call and return to landing page
-    const endCall = () => {
+    const endCall = async () => {
         // Notify the other user that this user is ending the call
         if (socketRef.current?.readyState === WebSocket.OPEN) {
             socketRef.current.send(JSON.stringify({ type: "end-call" }));
@@ -37,11 +63,20 @@ const CallPage: React.FC = () => {
         socketRef.current = null;
         setEndMessage("You ended the call");
         setCallEnded(true);
+        await closeSession();
         setTimeout(() => navigate('/'), 2000);
     };
 
     const config = {
         iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    };
+
+    const ensureSession = async () => {
+        if (sessionRef.current) return sessionRef.current;
+        const { sessionId: sid } = await startSession(user.id);
+        sessionRef.current = sid;
+        setSessionId(sid);
+        return sid;
     };
 
     useEffect(() => {
@@ -83,14 +118,19 @@ const CallPage: React.FC = () => {
         init();
 
         const socket = socketRef.current!;
+        const handleSocketEnd = async (reason: string) => {
+            console.log(reason);
+            if (callStartedRef.current || isActiveRef.current || hasRemoteRef.current) {
+                await endCall();
+            }
+        };
+
         socket.onclose = () => {
-            console.log("Remote user closed connection");
-            endCall();
+            handleSocketEnd("Remote user closed connection");
         };
 
         socket.onerror = () => {
-            console.log("Socket connection error");
-            endCall();
+            handleSocketEnd("Socket connection error");
         };
 
         socket.onmessage = async (event) => {
@@ -112,15 +152,29 @@ const CallPage: React.FC = () => {
                 socketRef.current = null;
                 setEndMessage("The other user ended the call");
                 setCallEnded(true);
+                await closeSession();
                 setTimeout(() => navigate('/'), 2000);
             }
         };
 
+        return () => {
+            localStreamRef.current?.getTracks().forEach(track => track.stop());
+            pcRef.current?.close();
+            if (socketRef.current?.readyState === WebSocket.OPEN || socketRef.current?.readyState === WebSocket.CONNECTING) {
+                socketRef.current?.close();
+            }
+            socketRef.current = null;
+            if (callStartedRef.current) {
+                closeSession();
+            }
+        };
 
-    }, []);
+    }, [navigate]);
 
     const startCall = async () => {
         if (!pcRef.current || !socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) return;
+        await ensureSession();
+        callStartedRef.current = true;
         const offer = await pcRef.current.createOffer();
         await pcRef.current.setLocalDescription(offer);
         socketRef.current.send(JSON.stringify({ type: "offer", offer }));
@@ -140,6 +194,14 @@ const CallPage: React.FC = () => {
         const interval = setInterval(checkRemoteStream, 500);
         return () => clearInterval(interval);
     }, []);
+
+    useEffect(() => {
+        hasRemoteRef.current = hasRemoteStream;
+    }, [hasRemoteStream]);
+
+    useEffect(() => {
+        isActiveRef.current = isActive;
+    }, [isActive]);
 
     // Play sound when emotion changes
     useEffect(() => {

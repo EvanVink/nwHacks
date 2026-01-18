@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import type { User } from "../types";
 
 const styles = `
   @keyframes zoom {
@@ -16,7 +17,12 @@ const styles = `
   }
 `;
 
-const LandingPage: React.FC = () => {
+interface LandingPageProps {
+  user: User | null;
+  onLogout: () => void;
+}
+
+const LandingPage: React.FC<LandingPageProps> = ({ user, onLogout }) => {
   return (
     <>
       <style>{styles}</style>
@@ -68,35 +74,85 @@ const LandingPage: React.FC = () => {
             and brings your conversations to life with personalized audio feedback.
           </p>
 
-          <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem" }}>
-            <Link
-              to="/call"
-              style={{
-                padding: "1rem 2.5rem",
-                fontSize: "1.1rem",
-                fontWeight: 600,
-                backgroundColor: "#6D28D9",
-                color: "#ffffff",
-                borderRadius: "50px",
-                textDecoration: "none",
-                boxShadow: "0 8px 24px rgba(224, 120, 86, 0.3)",
-                transition: "transform 0.3s, box-shadow 0.3s",
-                border: "none",
-                cursor: "pointer",
-              }}
-              onMouseOver={(e) => {
-                (e.target as HTMLAnchorElement).style.boxShadow =
-                  "0 12px 32px rgba(224, 120, 86, 0.4)";
-                (e.target as HTMLAnchorElement).style.transform = "translateY(-2px)";
-              }}
-              onMouseOut={(e) => {
-                (e.target as HTMLAnchorElement).style.boxShadow =
-                  "0 8px 24px rgba(224, 120, 86, 0.3)";
-                (e.target as HTMLAnchorElement).style.transform = "translateY(0)";
-              }}
-            >
-              Start a Call
-            </Link>
+          <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem", alignItems: "center" }}>
+            {user ? (
+              <>
+                <Link
+                  to="/call"
+                  style={{
+                    padding: "1rem 2.5rem",
+                    fontSize: "1.1rem",
+                    fontWeight: 600,
+                    backgroundColor: "#6D28D9",
+                    color: "#ffffff",
+                    borderRadius: "50px",
+                    textDecoration: "none",
+                    boxShadow: "0 8px 24px rgba(224, 120, 86, 0.3)",
+                    transition: "transform 0.3s, box-shadow 0.3s",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                  onMouseOver={(e) => {
+                    (e.target as HTMLAnchorElement).style.boxShadow =
+                      "0 12px 32px rgba(224, 120, 86, 0.4)";
+                    (e.target as HTMLAnchorElement).style.transform = "translateY(-2px)";
+                  }}
+                  onMouseOut={(e) => {
+                    (e.target as HTMLAnchorElement).style.boxShadow =
+                      "0 8px 24px rgba(224, 120, 86, 0.3)";
+                    (e.target as HTMLAnchorElement).style.transform = "translateY(0)";
+                  }}
+                >
+                  Start a Call
+                </Link>
+                <button
+                  onClick={onLogout}
+                  style={{
+                    padding: "0.85rem 1.5rem",
+                    fontSize: "1rem",
+                    fontWeight: 600,
+                    backgroundColor: "#e0e7ff",
+                    color: "#1a281f",
+                    borderRadius: "16px",
+                    border: "1px solid #d4d8ff",
+                    cursor: "pointer",
+                  }}
+                >
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/auth"
+                  style={{
+                    padding: "1rem 2.5rem",
+                    fontSize: "1.1rem",
+                    fontWeight: 600,
+                    backgroundColor: "#6D28D9",
+                    color: "#ffffff",
+                    borderRadius: "50px",
+                    textDecoration: "none",
+                    boxShadow: "0 8px 24px rgba(224, 120, 86, 0.3)",
+                    transition: "transform 0.3s, box-shadow 0.3s",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                  onMouseOver={(e) => {
+                    (e.target as HTMLAnchorElement).style.boxShadow =
+                      "0 12px 32px rgba(224, 120, 86, 0.4)";
+                    (e.target as HTMLAnchorElement).style.transform = "translateY(-2px)";
+                  }}
+                  onMouseOut={(e) => {
+                    (e.target as HTMLAnchorElement).style.boxShadow =
+                      "0 8px 24px rgba(224, 120, 86, 0.3)";
+                    (e.target as HTMLAnchorElement).style.transform = "translateY(0)";
+                  }}
+                >
+                  Log in / Sign up
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Features */}

@@ -1,21 +1,22 @@
-// API endpoint - modify based on your deployment
-
+// API endpoint - update for your deployment
+export const API_BASE =
+  import.meta.env.VITE_API_BASE || "http://localhost:3001";
 
 // Model URLs for face-api.js
-export const MODEL_URL = '/models';
+export const MODEL_URL = "/models";
 
 // Face detection settings
 export const FACE_DETECTION_OPTIONS = {
-    inputSize: 416,
-    scoreThreshold: 0.5,
+  inputSize: 416,
+  scoreThreshold: 0.5,
 };
 
 // Audio settings
 export const AUDIO_SETTINGS = {
-    defaultVolume: 0.5,
-    maxVolume: 1.0,
-    minVolume: 0.0,
-    defaultSensitivity: 0.7,
+  defaultVolume: 0.5,
+  maxVolume: 1.0,
+  minVolume: 0.0,
+  defaultSensitivity: 0.7,
 };
 
 // Detection loop settings

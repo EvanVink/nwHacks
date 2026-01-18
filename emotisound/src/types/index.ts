@@ -1,35 +1,36 @@
 // Emotion types
-export type Emotion = 'happy' | 'sad' | 'angry' | 'neutral';
+export type Emotion = "happy" | "sad" | "angry" | "neutral";
 
 export interface EmotionDetection {
-    emotion: Emotion;
-    confidence: number;
-    timestamp: number;
+  emotion: Emotion;
+  confidence: number;
+  timestamp: number;
 }
 
 export interface Session {
-    id?: string;
-    userId: string;
-    startedAt: Date;
-    endedAt?: Date;
-    emotionCount: Record<Emotion, number>;
+  id?: string;
+  userId: string;
+  startedAt: Date;
+  endedAt?: Date;
+  emotionCount: Record<Emotion, number>;
 }
 
 export interface User {
-    id: string;
-    email: string;
-    createdAt: Date;
-    preferences?: UserPreferences;
+  id: string;
+  name: string;
+  email: string;
+  createdAt?: Date | string;
+  preferences?: UserPreferences;
 }
 
 export interface UserPreferences {
-    volume: number;
-    sensitivity: number;
-    audioEnabled: boolean;
-    cameraEnabled: boolean;
+  volume: number;
+  sensitivity: number;
+  audioEnabled: boolean;
+  cameraEnabled: boolean;
 }
 
 export interface AuthResponse {
-    token: string;
-    user: User;
+  token: string;
+  user: User;
 }
