@@ -155,7 +155,7 @@ const CallPage: React.FC = () => {
                 display: "flex",
                 flexDirection: "column",
                 minHeight: "100vh",
-                backgroundColor: "#ffffff",
+                backgroundColor: "#f0f0f0",
                 fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
                 color: "#1a281f",
             }}
@@ -175,19 +175,19 @@ const CallPage: React.FC = () => {
                     zIndex: 1000,
                 }}>
                     <div style={{
-                        backgroundColor: "#6D28D9",
+                        backgroundColor: "#d9d9d9",
                         padding: "2rem",
                         borderRadius: "16px",
                         boxShadow: "0 8px 32px rgba(0,0,0,0.15)",
                         textAlign: "center",
                     }}>
-                        <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#ffffff" }}>
+                        <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#1a1a1a" }}>
                             Call Ended
                         </h2>
-                        <p style={{ fontSize: "1rem", marginBottom: "0.5rem", color: "#ffffff" }}>
+                        <p style={{ fontSize: "1rem", marginBottom: "0.5rem", color: "#1a1a1a" }}>
                             {endMessage}
                         </p>
-                        <p style={{ fontSize: "0.85rem", color: "#f5f5f5", marginTop: "1rem" }}>
+                        <p style={{ fontSize: "0.85rem", color: "#3a3a3a", marginTop: "1rem" }}>
                             Returning to home...
                         </p>
                     </div>
@@ -199,7 +199,7 @@ const CallPage: React.FC = () => {
                 padding: "1.5rem",
                 textAlign: "center",
                 borderBottom: "1px solid #f0f0f0",
-                backgroundColor: "#f8f9fa"
+                backgroundColor: "#e6e6e6"
             }}>
                 <h1 style={{ margin: 0, fontSize: "1.5rem", color: "#1a281f" }}>Video Call</h1>
             </div>
@@ -222,7 +222,7 @@ const CallPage: React.FC = () => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        backgroundColor: "#f8f9fa",
+                        backgroundColor: "#e6e6e6",
                         padding: "1rem",
                         borderRadius: "12px",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
@@ -259,7 +259,7 @@ const CallPage: React.FC = () => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        backgroundColor: "#f8f9fa",
+                        backgroundColor: "#e6e6e6",
                         padding: isActive ? "1rem" : "0",
                         borderRadius: "12px",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
@@ -296,7 +296,7 @@ const CallPage: React.FC = () => {
                 justifyContent: "center",
                 gap: "1rem",
                 borderTop: "1px solid #f0f0f0",
-                backgroundColor: "#f8f9fa"
+                backgroundColor: "#e6e6e6"
             }}>
                 {!hasRemoteStream && (
                     <button
