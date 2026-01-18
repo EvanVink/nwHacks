@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useEmotionDetection } from '../hooks/useEmotionDetection';
+import { EMOTION_FREQUENCIES } from '../utils/emotionMapper';
+import type { Emotion } from '../types';
 
 const CallPage: React.FC = () => {
     const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -9,6 +11,14 @@ const CallPage: React.FC = () => {
     const pcRef = useRef<RTCPeerConnection | null>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
     const socketRef = useRef<WebSocket | null>(null);
+    const lastEmotionRef = useRef<Emotion | null>(null);
+
+    // Play sound when emotion is detected
+    const playEmotionSound = (emotion: Emotion) => {
+        const audio = new Audio(`/sounds/${emotion}.mp3`);
+        audio.volume = 0.5;
+        audio.play().catch(err => console.log("Could not play sound:", err));
+    };
 
     const config = {
         iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -81,6 +91,14 @@ const CallPage: React.FC = () => {
         remoteVideoRef,
         isActive
     );
+
+    // Play sound when emotion changes
+    useEffect(() => {
+        if (currentEmotion && currentEmotion !== lastEmotionRef.current) {
+            lastEmotionRef.current = currentEmotion;
+            playEmotionSound(currentEmotion);
+        }
+    }, [currentEmotion]);
 
     return (
         <div

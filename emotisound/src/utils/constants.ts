@@ -23,4 +23,4 @@ export const DETECTION_FPS = 30;
 export const DETECTION_INTERVAL = 1000 / DETECTION_FPS;
 
 // Emotion confidence threshold
-export const CONFIDENCE_THRESHOLD = 0.2;
+export const CONFIDENCE_THRESHOLD = 0.9;
