@@ -1,6 +1,5 @@
 // API endpoint - update for your deployment
-export const API_BASE =
-  import.meta.env.VITE_API_BASE || "http://localhost:3001";
+export const API_BASE = "https://nwhacks-backend.onrender.com";
 
 // Model URLs for face-api.js
 export const MODEL_URL = "/models";

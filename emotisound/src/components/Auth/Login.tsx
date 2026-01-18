@@ -23,45 +23,123 @@ export const Login: React.FC<LoginProps> = ({ onLogin, loading = false }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md mx-auto">
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem", width: "100%" }}>
             {error && (
-                <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded text-red-700">
-                    <AlertCircle size={20} />
+                <div style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "0.75rem",
+                    padding: "0.875rem",
+                    backgroundColor: "#fee2e2",
+                    border: "1px solid #fca5a5",
+                    borderRadius: "8px",
+                    color: "#991b1b",
+                    fontSize: "0.9rem",
+                }}>
+                    <AlertCircle size={20} style={{ flexShrink: 0, marginTop: "0.125rem" }} />
                     <span>{error}</span>
                 </div>
             )}
 
             <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="email" style={{
+                    display: "block",
+                    fontSize: "0.9rem",
+                    fontWeight: 600,
+                    color: "#1a281f",
+                    marginBottom: "0.5rem",
+                }}>
                     Email
                 </label>
-                <div className="relative">
-                    <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
+                <div style={{ position: "relative" }}>
+                    <Mail style={{
+                        position: "absolute",
+                        left: "1rem",
+                        top: "0.875rem",
+                        color: "#9ca3af",
+                        width: "20px",
+                        height: "20px",
+                    }} size={20} />
                     <input
                         id="email"
                         type="email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         required
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        style={{
+                            width: "100%",
+                            paddingLeft: "2.75rem",
+                            paddingRight: "1rem",
+                            paddingTop: "0.75rem",
+                            paddingBottom: "0.75rem",
+                            border: "1px solid #d1d5db",
+                            borderRadius: "8px",
+                            fontSize: "0.95rem",
+                            color: "#1a281f",
+                            backgroundColor: "#ffffff",
+                            transition: "all 0.2s ease",
+                            boxSizing: "border-box",
+                        }}
+                        onFocus={(e) => {
+                            e.currentTarget.style.borderColor = "#6D28D9";
+                            e.currentTarget.style.boxShadow = "0 0 0 3px rgba(109, 40, 217, 0.1)";
+                        }}
+                        onBlur={(e) => {
+                            e.currentTarget.style.borderColor = "#d1d5db";
+                            e.currentTarget.style.boxShadow = "none";
+                        }}
                         placeholder="your@email.com"
                     />
                 </div>
             </div>
 
             <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="password" style={{
+                    display: "block",
+                    fontSize: "0.9rem",
+                    fontWeight: 600,
+                    color: "#1a281f",
+                    marginBottom: "0.5rem",
+                }}>
                     Password
                 </label>
-                <div className="relative">
-                    <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
+                <div style={{ position: "relative" }}>
+                    <Lock style={{
+                        position: "absolute",
+                        left: "1rem",
+                        top: "0.875rem",
+                        color: "#9ca3af",
+                        width: "20px",
+                        height: "20px",
+                    }} size={20} />
                     <input
                         id="password"
                         type="password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         required
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        style={{
+                            width: "100%",
+                            paddingLeft: "2.75rem",
+                            paddingRight: "1rem",
+                            paddingTop: "0.75rem",
+                            paddingBottom: "0.75rem",
+                            border: "1px solid #d1d5db",
+                            borderRadius: "8px",
+                            fontSize: "0.95rem",
+                            color: "#1a281f",
+                            backgroundColor: "#ffffff",
+                            transition: "all 0.2s ease",
+                            boxSizing: "border-box",
+                        }}
+                        onFocus={(e) => {
+                            e.currentTarget.style.borderColor = "#6D28D9";
+                            e.currentTarget.style.boxShadow = "0 0 0 3px rgba(109, 40, 217, 0.1)";
+                        }}
+                        onBlur={(e) => {
+                            e.currentTarget.style.borderColor = "#d1d5db";
+                            e.currentTarget.style.boxShadow = "none";
+                        }}
                         placeholder="••••••••"
                     />
                 </div>
@@ -70,7 +148,33 @@ export const Login: React.FC<LoginProps> = ({ onLogin, loading = false }) => {
             <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-medium py-2 rounded-lg transition"
+                style={{
+                    width: "100%",
+                    backgroundColor: loading ? "#d1d5db" : "#6D28D9",
+                    color: "#ffffff",
+                    fontWeight: 600,
+                    fontSize: "0.95rem",
+                    padding: "0.875rem 1rem",
+                    borderRadius: "8px",
+                    border: "none",
+                    cursor: loading ? "not-allowed" : "pointer",
+                    transition: "all 0.2s ease",
+                    marginTop: "0.5rem",
+                }}
+                onMouseOver={(e) => {
+                    if (!loading) {
+                        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#5b21b6";
+                        (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)";
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 12px rgba(109, 40, 217, 0.3)";
+                    }
+                }}
+                onMouseOut={(e) => {
+                    if (!loading) {
+                        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#6D28D9";
+                        (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)";
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "none";
+                    }
+                }}
             >
                 {loading ? 'Logging in...' : 'Log In'}
             </button>

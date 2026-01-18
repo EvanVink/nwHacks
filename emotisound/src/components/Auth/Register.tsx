@@ -45,21 +45,47 @@ export const Register: React.FC<RegisterProps> = ({ onRegister, loading = false 
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md mx-auto">
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem", width: "100%" }}>
             {error && (
-                <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded text-red-700">
-                    <AlertCircle size={20} className="mt-0.5 flex-shrink-0" />
+                <div style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "0.75rem",
+                    padding: "0.875rem",
+                    backgroundColor: "#fee2e2",
+                    border: "1px solid #fca5a5",
+                    borderRadius: "8px",
+                    color: "#991b1b",
+                    fontSize: "0.9rem",
+                }}>
+                    <AlertCircle size={20} style={{ flexShrink: 0, marginTop: "0.125rem" }} />
                     <span>{error}</span>
                 </div>
             )}
 
-            <div className="flex items-start gap-2 p-3 bg-blue-50 border border-blue-200 rounded text-blue-700 text-sm">
-                <Info size={20} className="mt-0.5 flex-shrink-0" />
+            <div style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "0.75rem",
+                padding: "0.875rem",
+                backgroundColor: "#dbeafe",
+                border: "1px solid #93c5fd",
+                borderRadius: "8px",
+                color: "#1e40af",
+                fontSize: "0.85rem",
+            }}>
+                <Info size={20} style={{ flexShrink: 0, marginTop: "0.125rem" }} />
                 <span>Your facial data is never stored. We only track emotion detection counts.</span>
             </div>
 
             <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="email" style={{
+                    display: "block",
+                    fontSize: "0.9rem",
+                    fontWeight: 600,
+                    color: "#1a281f",
+                    marginBottom: "0.5rem",
+                }}>
                     Email
                 </label>
                 <input
@@ -68,13 +94,37 @@ export const Register: React.FC<RegisterProps> = ({ onRegister, loading = false 
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                        width: "100%",
+                        padding: "0.75rem 1rem",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "8px",
+                        fontSize: "0.95rem",
+                        color: "#1a281f",
+                        backgroundColor: "#ffffff",
+                        transition: "all 0.2s ease",
+                        boxSizing: "border-box",
+                    }}
+                    onFocus={(e) => {
+                        e.currentTarget.style.borderColor = "#6D28D9";
+                        e.currentTarget.style.boxShadow = "0 0 0 3px rgba(109, 40, 217, 0.1)";
+                    }}
+                    onBlur={(e) => {
+                        e.currentTarget.style.borderColor = "#d1d5db";
+                        e.currentTarget.style.boxShadow = "none";
+                    }}
                     placeholder="your@email.com"
                 />
             </div>
 
             <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="password" style={{
+                    display: "block",
+                    fontSize: "0.9rem",
+                    fontWeight: 600,
+                    color: "#1a281f",
+                    marginBottom: "0.5rem",
+                }}>
                     Password (min. 8 characters)
                 </label>
                 <input
@@ -83,13 +133,37 @@ export const Register: React.FC<RegisterProps> = ({ onRegister, loading = false 
                     value={password}
                     onChange={e => handlePasswordChange(e.target.value)}
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                        width: "100%",
+                        padding: "0.75rem 1rem",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "8px",
+                        fontSize: "0.95rem",
+                        color: "#1a281f",
+                        backgroundColor: "#ffffff",
+                        transition: "all 0.2s ease",
+                        boxSizing: "border-box",
+                    }}
+                    onFocus={(e) => {
+                        e.currentTarget.style.borderColor = "#6D28D9";
+                        e.currentTarget.style.boxShadow = "0 0 0 3px rgba(109, 40, 217, 0.1)";
+                    }}
+                    onBlur={(e) => {
+                        e.currentTarget.style.borderColor = "#d1d5db";
+                        e.currentTarget.style.boxShadow = "none";
+                    }}
                     placeholder="••••••••"
                 />
             </div>
 
             <div>
-                <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="confirm-password" style={{
+                    display: "block",
+                    fontSize: "0.9rem",
+                    fontWeight: 600,
+                    color: "#1a281f",
+                    marginBottom: "0.5rem",
+                }}>
                     Confirm Password
                 </label>
                 <input
@@ -98,19 +172,60 @@ export const Register: React.FC<RegisterProps> = ({ onRegister, loading = false 
                     value={confirmPassword}
                     onChange={e => handleConfirmPasswordChange(e.target.value)}
                     required
-                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${passwordMismatch
-                        ? 'border-red-300 focus:ring-red-500'
-                        : 'border-gray-300 focus:ring-blue-500'
-                        }`}
+                    style={{
+                        width: "100%",
+                        padding: "0.75rem 1rem",
+                        border: passwordMismatch ? "1px solid #fca5a5" : "1px solid #d1d5db",
+                        borderRadius: "8px",
+                        fontSize: "0.95rem",
+                        color: "#1a281f",
+                        backgroundColor: "#ffffff",
+                        transition: "all 0.2s ease",
+                        boxSizing: "border-box",
+                    }}
+                    onFocus={(e) => {
+                        e.currentTarget.style.borderColor = passwordMismatch ? "#fca5a5" : "#6D28D9";
+                        e.currentTarget.style.boxShadow = passwordMismatch ? "0 0 0 3px rgba(252, 165, 165, 0.1)" : "0 0 0 3px rgba(109, 40, 217, 0.1)";
+                    }}
+                    onBlur={(e) => {
+                        e.currentTarget.style.borderColor = passwordMismatch ? "#fca5a5" : "#d1d5db";
+                        e.currentTarget.style.boxShadow = "none";
+                    }}
                     placeholder="••••••••"
                 />
-                {passwordMismatch && <p className="text-red-600 text-sm mt-1">Passwords do not match</p>}
+                {passwordMismatch && <p style={{ color: "#991b1b", fontSize: "0.85rem", marginTop: "0.25rem" }}>Passwords do not match</p>}
             </div>
 
             <button
                 type="submit"
                 disabled={loading || passwordMismatch}
-                className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-medium py-2 rounded-lg transition"
+                style={{
+                    width: "100%",
+                    backgroundColor: loading || passwordMismatch ? "#d1d5db" : "#6D28D9",
+                    color: "#ffffff",
+                    fontWeight: 600,
+                    fontSize: "0.95rem",
+                    padding: "0.875rem 1rem",
+                    borderRadius: "8px",
+                    border: "none",
+                    cursor: loading || passwordMismatch ? "not-allowed" : "pointer",
+                    transition: "all 0.2s ease",
+                    marginTop: "0.5rem",
+                }}
+                onMouseOver={(e) => {
+                    if (!loading && !passwordMismatch) {
+                        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#5b21b6";
+                        (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-1px)";
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 12px rgba(109, 40, 217, 0.3)";
+                    }
+                }}
+                onMouseOut={(e) => {
+                    if (!loading && !passwordMismatch) {
+                        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#6D28D9";
+                        (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)";
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "none";
+                    }
+                }}
             >
                 {loading ? 'Creating Account...' : 'Create Account'}
             </button>
