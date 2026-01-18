@@ -155,9 +155,9 @@ const CallPage: React.FC = () => {
                 display: "flex",
                 flexDirection: "column",
                 minHeight: "100vh",
-                backgroundColor: "#1f1f1f",
+                backgroundColor: "#ffffff",
                 fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-                color: "#f5f5f5",
+                color: "#1a281f",
             }}
         >
             {/* Call Ended Popup */}
@@ -175,19 +175,19 @@ const CallPage: React.FC = () => {
                     zIndex: 1000,
                 }}>
                     <div style={{
-                        backgroundColor: "#2c2c2c",
+                        backgroundColor: "#6D28D9",
                         padding: "2rem",
                         borderRadius: "16px",
-                        boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
+                        boxShadow: "0 8px 32px rgba(0,0,0,0.15)",
                         textAlign: "center",
                     }}>
-                        <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#4fc3f7" }}>
+                        <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#ffffff" }}>
                             Call Ended
                         </h2>
-                        <p style={{ fontSize: "1rem", marginBottom: "0.5rem", color: "#b0b0b0" }}>
+                        <p style={{ fontSize: "1rem", marginBottom: "0.5rem", color: "#ffffff" }}>
                             {endMessage}
                         </p>
-                        <p style={{ fontSize: "0.85rem", color: "#808080", marginTop: "1rem" }}>
+                        <p style={{ fontSize: "0.85rem", color: "#f5f5f5", marginTop: "1rem" }}>
                             Returning to home...
                         </p>
                     </div>
@@ -198,9 +198,10 @@ const CallPage: React.FC = () => {
             <div style={{
                 padding: "1.5rem",
                 textAlign: "center",
-                borderBottom: "1px solid #2c2c2c"
+                borderBottom: "1px solid #f0f0f0",
+                backgroundColor: "#f8f9fa"
             }}>
-                <h1 style={{ margin: 0, fontSize: "1.5rem" }}>Video Call</h1>
+                <h1 style={{ margin: 0, fontSize: "1.5rem", color: "#1a281f" }}>Video Call</h1>
             </div>
 
             {/* Main Video Area */}
@@ -221,14 +222,14 @@ const CallPage: React.FC = () => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        backgroundColor: "#2c2c2c",
+                        backgroundColor: "#f8f9fa",
                         padding: "1rem",
                         borderRadius: "12px",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                         transition: "flex 0.4s ease",
                     }}
                 >
-                    <h2 style={{ marginBottom: "1rem" }}>Local</h2>
+                    <h2 style={{ marginBottom: "1rem", color: "#1a281f" }}>Local</h2>
 
                     <video
                         ref={localVideoRef}
@@ -258,14 +259,14 @@ const CallPage: React.FC = () => {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        backgroundColor: "#2c2c2c",
+                        backgroundColor: "#f8f9fa",
                         padding: isActive ? "1rem" : "0",
                         borderRadius: "12px",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                         transition: "all 0.4s ease",
                     }}
                 >
-                    <h2 style={{ marginBottom: "1rem" }}>Remote</h2>
+                    <h2 style={{ marginBottom: "1rem", color: "#1a281f" }}>Remote</h2>
 
                     <video
                         ref={remoteVideoRef}
@@ -280,7 +281,7 @@ const CallPage: React.FC = () => {
                         }}
                     />
                     {isActive && currentEmotion && (
-                        <div style={{ marginTop: "0.75rem", fontSize: "0.9rem" }}>
+                        <div style={{ marginTop: "0.75rem", fontSize: "0.9rem", color: "#1a281f" }}>
                             {currentEmotion} ({Math.round(confidence * 100)}%)
                         </div>
                     )}
@@ -294,56 +295,62 @@ const CallPage: React.FC = () => {
                 display: "flex",
                 justifyContent: "center",
                 gap: "1rem",
-                borderTop: "1px solid #2c2c2c"
+                borderTop: "1px solid #f0f0f0",
+                backgroundColor: "#f8f9fa"
             }}>
-                <button
-                    onClick={startCall}
-                    style={{
-                        padding: "0.75rem 2.5rem",
-                        fontSize: "1rem",
-                        fontWeight: "bold",
-                        backgroundColor: "#4b4b4b",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "24px",
-                        cursor: "pointer",
-                        transition: "background-color 0.3s, transform 0.2s",
-                    }}
-                    onMouseOver={(e) => {
-                        (e.target as HTMLButtonElement).style.backgroundColor = "#5c5c5c";
-                        (e.target as HTMLButtonElement).style.transform = "scale(1.05)";
-                    }}
-                    onMouseOut={(e) => {
-                        (e.target as HTMLButtonElement).style.backgroundColor = "#4b4b4b";
-                        (e.target as HTMLButtonElement).style.transform = "scale(1)";
-                    }}
-                >
-                    Start Call
-                </button>
-                <button
-                    onClick={endCall}
-                    style={{
-                        padding: "0.75rem 2.5rem",
-                        fontSize: "1rem",
-                        fontWeight: "bold",
-                        backgroundColor: "#d32f2f",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "24px",
-                        cursor: "pointer",
-                        transition: "background-color 0.3s, transform 0.2s",
-                    }}
-                    onMouseOver={(e) => {
-                        (e.target as HTMLButtonElement).style.backgroundColor = "#f44336";
-                        (e.target as HTMLButtonElement).style.transform = "scale(1.05)";
-                    }}
-                    onMouseOut={(e) => {
-                        (e.target as HTMLButtonElement).style.backgroundColor = "#d32f2f";
-                        (e.target as HTMLButtonElement).style.transform = "scale(1)";
-                    }}
-                >
-                    End Call
-                </button>
+                {!hasRemoteStream && (
+                    <button
+                        onClick={startCall}
+                        style={{
+                            padding: "0.75rem 2.5rem",
+                            fontSize: "1rem",
+                            fontWeight: "bold",
+                            backgroundColor: "#31a507",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "24px",
+                            cursor: "pointer",
+                            transition: "background-color 0.3s, transform 0.2s",
+                        }}
+                        onMouseOver={(e) => {
+                            (e.target as HTMLButtonElement).style.backgroundColor = "#3eda05";
+                            (e.target as HTMLButtonElement).style.transform = "scale(1.05)";
+                        }}
+                        onMouseOut={(e) => {
+                            (e.target as HTMLButtonElement).style.backgroundColor = "#31a507";
+                            (e.target as HTMLButtonElement).style.transform = "scale(1)";
+                        }}
+                    >
+                        Start Call
+                    </button>
+                )}
+
+                {(hasRemoteStream || isActive) && (
+                    <button
+                        onClick={endCall}
+                        style={{
+                            padding: "0.75rem 2.5rem",
+                            fontSize: "1rem",
+                            fontWeight: "bold",
+                            backgroundColor: "#bd0202",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "24px",
+                            cursor: "pointer",
+                            transition: "background-color 0.3s, transform 0.2s",
+                        }}
+                        onMouseOver={(e) => {
+                            (e.target as HTMLButtonElement).style.backgroundColor = "#ff0808";
+                            (e.target as HTMLButtonElement).style.transform = "scale(1.05)";
+                        }}
+                        onMouseOut={(e) => {
+                            (e.target as HTMLButtonElement).style.backgroundColor = "#bd0202";
+                            (e.target as HTMLButtonElement).style.transform = "scale(1)";
+                        }}
+                    >
+                        End Call
+                    </button>
+                )}
             </div>
         </div>
     );
