@@ -2,7 +2,7 @@
 export const API_BASE = "https://nwhacks-backend.onrender.com";
 
 // Model URLs for face-api.js
-export const MODEL_URL = "/models";
+export const MODEL_URL = "/models/";
 
 // Face detection settings
 export const FACE_DETECTION_OPTIONS = {
