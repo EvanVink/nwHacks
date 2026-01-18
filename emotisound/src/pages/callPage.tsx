@@ -15,7 +15,6 @@ const CallPage: React.FC<CallPageProps> = ({ user }) => {
     const [isActive, setIsActive] = useState(false);
     const [callEnded, setCallEnded] = useState(false);
     const [endMessage, setEndMessage] = useState<string>("");
-    const [sessionId, setSessionId] = useState<string | null>(null);
     const sessionClosedRef = useRef(false);
     const callStartedRef = useRef(false);
     const hasRemoteRef = useRef(false);
@@ -45,7 +44,6 @@ const CallPage: React.FC<CallPageProps> = ({ user }) => {
         } finally {
             sessionClosedRef.current = true;
             sessionRef.current = null;
-            setSessionId(null);
         }
     };
 
@@ -75,7 +73,6 @@ const CallPage: React.FC<CallPageProps> = ({ user }) => {
         if (sessionRef.current) return sessionRef.current;
         const { sessionId: sid } = await startSession(user.id);
         sessionRef.current = sid;
-        setSessionId(sid);
         return sid;
     };
 
